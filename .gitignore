@@ -1,0 +1,14 @@
+/out/
+*.class
+.DS_Store
+/.idea/workspace.xml
+/.idea/shelf/
+
+/.neon-reactor-best
+
+/.flappy-best
+
+/.tj-tetris-best
+
+/.city-sport-alchemy
+/.city-sport-alchemy.tmp
