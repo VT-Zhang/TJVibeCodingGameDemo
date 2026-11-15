@@ -8,6 +8,7 @@ final class PhysicsEngine {
     private static final double DRAG = .07;
     private static final double MAX_SPEED = 1450;
     private final GameState state;
+
     PhysicsEngine(GameState state) {
         this.state = state;
     }
@@ -50,36 +51,56 @@ final class PhysicsEngine {
     }
 
     boolean hit(double cx, double cy, double r, double boost) {
-        return contact(cx, cy, r, boost, boost>0 ? .66 : .55, 0, 0);
+        return contact(cx, cy, r, boost, boost > 0 ? .66 : .55, 0, 0);
     }
+
     /** Resolve only inward relative velocity, leaving tangential motion intact. */
-    private boolean contact(double cx, double cy, double radius, double boost, double restitution, double surfaceVx, double surfaceVy) {
-        double dx = state.ballX-cx, dy = state.ballY-cy, d = Math.hypot(dx, dy);
-        if (d >= radius + BALL_RADIUS)return false;
-        double nx = d>1e-8 ? dx/d : 0, ny = d>1e-8 ? dy/d : -1;
-        double penetration = radius + BALL_RADIUS-d;
-        state.ballX += nx*(penetration+.01);
-        state.ballY += ny*(penetration+.01);
-        double incoming = (state.velocityX-surfaceVx)*nx+(state.velocityY-surfaceVy)*ny;
-        if (incoming >= 0)return false;
+    private boolean contact(
+            double cx,
+            double cy,
+            double radius,
+            double boost,
+            double restitution,
+            double surfaceVx,
+            double surfaceVy) {
+        double dx = state.ballX - cx, dy = state.ballY - cy, d = Math.hypot(dx, dy);
+        if (d >= radius + BALL_RADIUS) return false;
+        double nx = d > 1e-8 ? dx / d : 0, ny = d > 1e-8 ? dy / d : -1;
+        double penetration = radius + BALL_RADIUS - d;
+        state.ballX += nx * (penetration + .01);
+        state.ballY += ny * (penetration + .01);
+        double incoming = (state.velocityX - surfaceVx) * nx + (state.velocityY - surfaceVy) * ny;
+        if (incoming >= 0) return false;
         // Suppress tiny rebounds so resting contacts do not chatter.
         double bounce = incoming < -45 ? restitution : 0;
-        double impulse = -(1+bounce)*incoming+boost;
-        state.velocityX += impulse*nx;
-        state.velocityY += impulse*ny;
+        double impulse = -(1 + bounce) * incoming + boost;
+        state.velocityX += impulse * nx;
+        state.velocityY += impulse * ny;
         return true;
     }
 
     void wall(double ax, double ay, double bx, double by) {
-        double dx = bx-ax, dy = by-ay;
-        double t = Math.max(0, Math.min(1, ((state.ballX-ax)*dx+(state.ballY-ay)*dy)/(dx*dx+dy*dy)));
-        hit(ax+t*dx, ay+t*dy, 3, 0);
+        double dx = bx - ax, dy = by - ay;
+        double t =
+                Math.max(
+                        0,
+                        Math.min(
+                                1,
+                                ((state.ballX - ax) * dx + (state.ballY - ay) * dy)
+                                        / (dx * dx + dy * dy)));
+        hit(ax + t * dx, ay + t * dy, 3, 0);
     }
 
     void flipper(double ax, double ay, double angle, double omega) {
         double dx = FLIPPER_LENGTH * Math.cos(angle), dy = FLIPPER_LENGTH * Math.sin(angle);
-        double t = Math.max(0, Math.min(1, ((state.ballX-ax)*dx+(state.ballY-ay)*dy)/(FLIPPER_LENGTH * FLIPPER_LENGTH)));
+        double t =
+                Math.max(
+                        0,
+                        Math.min(
+                                1,
+                                ((state.ballX - ax) * dx + (state.ballY - ay) * dy)
+                                        / (FLIPPER_LENGTH * FLIPPER_LENGTH)));
         // Transfer paddle motion through the collision normal rather than an extra kick.
-        contact(ax+t*dx, ay+t*dy, 11, 0, .45, -t*dy*omega, t*dx*omega);
+        contact(ax + t * dx, ay + t * dy, 11, 0, .45, -t * dy * omega, t * dx * omega);
     }
 }

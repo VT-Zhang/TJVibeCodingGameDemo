@@ -21,32 +21,45 @@ final class GameControls {
 
     void install(JComponent component) {
         int[] codes = {
-            KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_A, KeyEvent.VK_D,
-            KeyEvent.VK_SPACE, KeyEvent.VK_P, KeyEvent.VK_R, KeyEvent.VK_M, KeyEvent.VK_Z
+            KeyEvent.VK_LEFT,
+            KeyEvent.VK_RIGHT,
+            KeyEvent.VK_A,
+            KeyEvent.VK_D,
+            KeyEvent.VK_SPACE,
+            KeyEvent.VK_P,
+            KeyEvent.VK_R,
+            KeyEvent.VK_M,
+            KeyEvent.VK_Z
         };
         for (int code : codes) {
             bind(component, code, false);
             bind(component, code, true);
         }
-        component.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent event) {
-                releaseAllAndPause();
-            }
-        });
+        component.addFocusListener(
+                new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent event) {
+                        releaseAllAndPause();
+                    }
+                });
     }
 
     private void bind(JComponent component, int code, boolean released) {
         String action = (released ? "release-" : "press-") + code;
-        component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-            .put(KeyStroke.getKeyStroke(code, 0, released), action);
-        component.getActionMap().put(action, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                if (released) release(code);
-                else press(code);
-            }
-        });
+        component
+                .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(code, 0, released), action);
+        component
+                .getActionMap()
+                .put(
+                        action,
+                        new AbstractAction() {
+                            @Override
+                            public void actionPerformed(ActionEvent event) {
+                                if (released) release(code);
+                                else press(code);
+                            }
+                        });
     }
 
     void press(int code) {
@@ -60,7 +73,9 @@ final class GameControls {
             case KeyEvent.VK_SPACE -> {
                 if (state.over) model.reset();
             }
-            default -> { /* Flipper and launcher holds are sampled by the simulation. */ }
+            default -> {
+                /* Flipper and launcher holds are sampled by the simulation. */
+            }
         }
     }
 

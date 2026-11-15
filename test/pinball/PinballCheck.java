@@ -31,8 +31,9 @@ public final class PinballCheck {
                 checkControls();
                 checkPersistence();
                 checkRendering();
-                System.out.println("PASS: launcher, drain, ball save, overload, softer rails, "
-                    + "resting contacts, flipper transfer, controls, persistence, rendering");
+                System.out.println(
+                        "PASS: launcher, drain, ball save, overload, softer rails, "
+                                + "resting contacts, flipper transfer, controls, persistence, rendering");
             } catch (Exception exception) {
                 throw new RuntimeException(exception);
             }
@@ -47,7 +48,9 @@ public final class PinballCheck {
         for (int i = 0; i < 2400; i++) {
             model.step(STEP);
             if (state.ballX < 530 && state.ballY < 500) entered = true;
-            check(Double.isFinite(state.ballX) && Double.isFinite(state.velocityY), "finite simulation");
+            check(
+                    Double.isFinite(state.ballX) && Double.isFinite(state.velocityY),
+                    "finite simulation");
         }
         check(entered, "minimum launch reaches main playfield");
         model.reset();
@@ -90,8 +93,9 @@ public final class PinballCheck {
         state.velocityX = -400;
         state.velocityY = 120;
         model.physics.wall(35, 170, 35, 650);
-        check(Math.abs(state.velocityX - 220) < .001 && state.velocityY == 120,
-            "rail softens normal rebound without altering tangent");
+        check(
+                Math.abs(state.velocityX - 220) < .001 && state.velocityY == 120,
+                "rail softens normal rebound without altering tangent");
         state.ballX = 45;
         state.ballY = 400;
         state.velocityX = -10;
@@ -103,8 +107,9 @@ public final class PinballCheck {
         state.velocityX = 0;
         state.velocityY = 100;
         model.physics.flipper(190, 715, 0, -8);
-        check(state.velocityY < 0 && state.velocityY > -600,
-            "moving flipper transfers controlled upward motion");
+        check(
+                state.velocityY < 0 && state.velocityY > -600,
+                "moving flipper transfers controlled upward motion");
     }
 
     private static void checkControls() {
@@ -130,7 +135,9 @@ public final class PinballCheck {
         model.step(STEP);
         check(state.leftFlipperAngle < .32, "left input moves flipper");
         controls.releaseAllAndPause();
-        check(state.paused && !state.heldKeys[KeyEvent.VK_LEFT], "focus loss clears held keys and pauses");
+        check(
+                state.paused && !state.heldKeys[KeyEvent.VK_LEFT],
+                "focus loss clears held keys and pauses");
         controls.press(KeyEvent.VK_R);
         check(state.ready && !state.paused && state.score == 0, "restart resets run");
     }

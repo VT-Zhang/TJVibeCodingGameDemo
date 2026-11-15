@@ -10,6 +10,7 @@ public final class FlappyCheck {
     private static void check(boolean value, String message) {
         if (!value) throw new AssertionError(message);
     }
+
     public static void main(String[] args) throws Exception {
         FlappyModel game = new FlappyModel(new Random(1), new ScoreStore(null));
         check(game.state == FlappyModel.State.READY, "starts ready");
@@ -39,7 +40,9 @@ public final class FlappyCheck {
         game.birdY = 620;
         game.update(1.0 / 120);
         check(game.state == FlappyModel.State.OVER, "ground collision");
-        game.reset(); game.flap(); game.birdY = 10;
+        game.reset();
+        game.flap();
+        game.birdY = 10;
         game.update(1.0 / 120);
         check(game.state == FlappyModel.State.OVER, "ceiling collision");
         SwingUtilities.invokeAndWait(() -> {
@@ -51,7 +54,8 @@ public final class FlappyCheck {
             graphics.dispose();
             check(image.getRGB(0, 0) != image.getRGB(0, 680), "scene renders");
         });
-        System.out.println("PASS: flight, pause, scoring, collisions, restart, best score, rendering");
+        System.out.println(
+                "PASS: flight, pause, scoring, collisions, restart, best score, rendering");
         System.exit(0);
     }
 }

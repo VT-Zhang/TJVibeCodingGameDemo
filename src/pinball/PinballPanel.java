@@ -45,10 +45,13 @@ final class PinballPanel extends JPanel {
         super.paintComponent(graphics);
         Graphics2D g = (Graphics2D) graphics.create();
         try {
-            double scale = Math.min(getWidth() / (double) DESIGN_WIDTH,
-                getHeight() / (double) DESIGN_HEIGHT);
-            g.translate((getWidth() - DESIGN_WIDTH * scale) / 2,
-                (getHeight() - DESIGN_HEIGHT * scale) / 2);
+            double scale =
+                    Math.min(
+                            getWidth() / (double) DESIGN_WIDTH,
+                            getHeight() / (double) DESIGN_HEIGHT);
+            g.translate(
+                    (getWidth() - DESIGN_WIDTH * scale) / 2,
+                    (getHeight() - DESIGN_HEIGHT * scale) / 2);
             g.scale(scale, scale);
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             hud.drawBranding(g, model.state);

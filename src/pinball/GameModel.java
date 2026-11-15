@@ -58,7 +58,8 @@ final class GameModel {
         physics.integrate(dt);
         physics.collideWithRails();
         physics.flipper(190, 715, state.leftFlipperAngle, (state.leftFlipperAngle - oldLeft) / dt);
-        physics.flipper(410, 715, state.rightFlipperAngle, (state.rightFlipperAngle - oldRight) / dt);
+        physics.flipper(
+                410, 715, state.rightFlipperAngle, (state.rightFlipperAngle - oldRight) / dt);
         updateObjectives();
         physics.limitSpeed();
         if (state.ballY > 825) drain();
@@ -67,10 +68,13 @@ final class GameModel {
     private void updateFlippers(double dt) {
         boolean leftHeld = state.heldKeys[KeyEvent.VK_LEFT] || state.heldKeys[KeyEvent.VK_A];
         boolean rightHeld = state.heldKeys[KeyEvent.VK_RIGHT] || state.heldKeys[KeyEvent.VK_D];
-        state.leftFlipperAngle = approach(state.leftFlipperAngle,
-            leftHeld && state.tilt < 4 ? -.5 : .32, dt * 16);
-        state.rightFlipperAngle = approach(state.rightFlipperAngle,
-            rightHeld && state.tilt < 4 ? Math.PI + .5 : Math.PI - .32, dt * 16);
+        state.leftFlipperAngle =
+                approach(state.leftFlipperAngle, leftHeld && state.tilt < 4 ? -.5 : .32, dt * 16);
+        state.rightFlipperAngle =
+                approach(
+                        state.rightFlipperAngle,
+                        rightHeld && state.tilt < 4 ? Math.PI + .5 : Math.PI - .32,
+                        dt * 16);
     }
 
     private void updateObjectives() {
@@ -126,7 +130,8 @@ final class GameModel {
         for (int i = 0; i < 18; i++) {
             double angle = random.nextDouble() * Math.PI * 2;
             double speed = 50 + random.nextDouble() * 180;
-            state.particles.add(new Particle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed));
+            state.particles.add(
+                    new Particle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed));
         }
     }
 

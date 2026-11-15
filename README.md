@@ -33,6 +33,26 @@ java -Djava.awt.headless=true -cp out alchemy.AlchemyCheck
 java -Djava.awt.headless=true -cp out capitaldash.DashCheck
 ```
 
+## Coding style
+
+All Java source and tests use K&R-style braces: opening braces stay on the same
+line, including `} else {` and `} catch (...) {`, with four-space indentation and
+consistent spacing. `.editorconfig` carries the indentation and IntelliJ brace
+settings for future edits.
+
+Formatting uses google-java-format 2.0.0 in AOSP mode (four spaces). To reproduce
+or check the format, download its official `google-java-format-2.0.0-all-deps.jar`
+from [the release page](https://github.com/google/google-java-format/releases/tag/v2.0.0)
+and run:
+
+```sh
+java -jar /path/to/google-java-format-2.0.0-all-deps.jar --aosp --cleanup=false --skip-sorting-imports --skip-removing-unused-imports --skip-reflowing-long-strings --skip-reordering-modifiers --replace src/*/*.java test/*/*.java
+```
+
+Replace `--replace` with `--dry-run --set-exit-if-changed` to check formatting
+without changing files. The formatter is only a development tool; the games
+still require just a JDK to compile and run.
+
 ---
 
 ## TJHSST Colonials — Pinball

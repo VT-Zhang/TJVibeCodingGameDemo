@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 /** Standalone Flappy Bird entry point. */
 public final class Main {
     private Main() {}
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             FlappyPanel panel = new FlappyPanel();
@@ -18,11 +19,13 @@ public final class Main {
             frame.setMinimumSize(new Dimension(360, 560));
             frame.pack();
             frame.setLocationRelativeTo(null);
-            frame.addWindowFocusListener(new WindowAdapter() {
-                @Override public void windowLostFocus(WindowEvent event) {
-                    panel.pauseForFocusLoss();
-                }
-            });
+            frame.addWindowFocusListener(
+                    new WindowAdapter() {
+                        @Override
+                        public void windowLostFocus(WindowEvent event) {
+                            panel.pauseForFocusLoss();
+                        }
+                    });
             frame.setVisible(true);
         });
     }

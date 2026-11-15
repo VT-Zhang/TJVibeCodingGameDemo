@@ -5,7 +5,14 @@ import java.util.*;
 /** Game rules and power-ups; has no Swing dependency. */
 final class TetrisModel {
     static final int COLS = 10, ROWS = 20;
-    enum State { READY, PLAYING, PAUSED, OVER }
+
+    enum State {
+        READY,
+        PLAYING,
+        PAUSED,
+        OVER
+    }
+
     final Tetromino[][] board = new Tetromino[ROWS][COLS];
     final Deque<Tetromino> queue = new ArrayDeque<>();
     final int[] powers = new int[3];
@@ -22,45 +29,75 @@ final class TetrisModel {
     int throwColumn, throwRow, throwsLanded;
     Tetromino thrownAnimal;
     static final double VACUUM_INTERVAL = 18, VACUUM_FLIGHT = 1.1;
+
     record VacuumBlock(int column, int row, Tetromino animal) {}
+
     final List<VacuumBlock> vacuumBlocks = new ArrayList<>();
     double vacuumCountdown, vacuumFlight;
     int blocksVacuumed;
 
-    TetrisModel(Random random) { this.random = random; reset(); }
+    TetrisModel(Random random) {
+        this.random = random;
+        reset();
+    }
+
     void reset() {
         for (Tetromino[] row : board) Arrays.fill(row, null);
-        queue.clear(); refill();
-        held = null; holdUsed = false;
+        queue.clear();
+        refill();
+        held = null;
+        holdUsed = false;
         score = lines = pieces = 0;
         slowRemaining = 0;
-        throwCountdown = THROW_INTERVAL; throwFlight = 0;
-        throwColumn = -1; throwRow = 19; throwsLanded = 0;
+        throwCountdown = THROW_INTERVAL;
+        throwFlight = 0;
+        throwColumn = -1;
+        throwRow = 19;
+        throwsLanded = 0;
         thrownAnimal = Tetromino.Z;
-        vacuumCountdown = VACUUM_INTERVAL; vacuumFlight = 0;
-        vacuumBlocks.clear(); blocksVacuumed = 0;
+        vacuumCountdown = VACUUM_INTERVAL;
+        vacuumFlight = 0;
+        vacuumBlocks.clear();
+        blocksVacuumed = 0;
         Arrays.fill(powers, 1);
-        spawn(); state = State.READY;
+        spawn();
+        state = State.READY;
         message = "Go Colonials! Build a better habitat.";
     }
+
     private void refill() {
         while (queue.size() < 8) {
             List<Tetromino> bag = new ArrayList<>(Arrays.asList(Tetromino.values()));
-            Collections.shuffle(bag, random); queue.addAll(bag);
+            Collections.shuffle(bag, random);
+            queue.addAll(bag);
         }
     }
-    void start() { if (state == State.READY) state = State.PLAYING; }
+
+    void start() {
+        if (state == State.READY) state = State.PLAYING;
+    }
+
     void togglePause() {
         if (state == State.PLAYING) state = State.PAUSED;
         else if (state == State.PAUSED) state = State.PLAYING;
     }
-    int level() { return 1 + lines / 10; }
+
+    int level() {
+        return 1 + lines / 10;
+    }
+
     private void spawn() {
-        refill(); active = queue.removeFirst(); refill();
-        x = 3; y = 0; rotation = 0;
-        fallTimer = lockTimer = 0; lockResets = 0;
+        refill();
+        active = queue.removeFirst();
+        refill();
+        x = 3;
+        y = 0;
+        rotation = 0;
+        fallTimer = lockTimer = 0;
+        lockResets = 0;
         if (!fits(x, y, rotation)) state = State.OVER;
     }
+
     boolean fits(int px, int py, int r) {
         for (int[] cell : active.cells(r)) {
             int cx = px + cell[0], cy = py + cell[1];
@@ -68,44 +105,76 @@ final class TetrisModel {
         }
         return true;
     }
+
     boolean move(int dx) {
         if (state != State.PLAYING || !fits(x + dx, y, rotation)) return false;
         boolean grounded = !fits(x, y + 1, rotation);
-        x += dx; resetLock(grounded); return true;
+        x += dx;
+        resetLock(grounded);
+        return true;
     }
+
     void rotate(int direction) {
         if (state != State.PLAYING) return;
         int next = Math.floorMod(rotation + direction, 4);
         boolean grounded = !fits(x, y + 1, rotation);
         // Small wall/floor kicks make turns near edges forgiving.
-        int[][] kicks = {{0,0},{-1,0},{1,0},{-2,0},{2,0},{0,-1},{0,-2}};
-        for (int[] kick : kicks) if (fits(x + kick[0], y + kick[1], next)) {
-            x += kick[0]; y += kick[1]; rotation = next;
-            resetLock(grounded); return;
+        int[][] kicks = {{0, 0}, {-1, 0}, {1, 0}, {-2, 0}, {2, 0}, {0, -1}, {0, -2}};
+        for (int[] kick : kicks)
+            if (fits(x + kick[0], y + kick[1], next)) {
+                x += kick[0];
+                y += kick[1];
+                rotation = next;
+                resetLock(grounded);
+                return;
+            }
+    }
+
+    private void resetLock(boolean grounded) {
+        if (grounded && lockResets < 15) {
+            lockTimer = 0;
+            lockResets++;
         }
     }
-    private void resetLock(boolean grounded) {
-        if (grounded && lockResets < 15) { lockTimer = 0; lockResets++; }
-    }
+
     void softDrop() {
-        if (state == State.PLAYING && fits(x, y + 1, rotation)) { y++; score++; fallTimer = 0; }
+        if (state == State.PLAYING && fits(x, y + 1, rotation)) {
+            y++;
+            score++;
+            fallTimer = 0;
+        }
     }
-    int ghostY() { int gy = y; while (fits(x, gy + 1, rotation)) gy++; return gy; }
+
+    int ghostY() {
+        int gy = y;
+        while (fits(x, gy + 1, rotation)) gy++;
+        return gy;
+    }
+
     void hardDrop() {
         if (state != State.PLAYING) return;
-        int landing = ghostY(); score += (landing - y) * 2; y = landing; lock();
+        int landing = ghostY();
+        score += (landing - y) * 2;
+        y = landing;
+        lock();
     }
+
     void hold() {
         if (state != State.PLAYING || holdUsed) return;
-        Tetromino previous = held; held = active;
+        Tetromino previous = held;
+        held = active;
         if (previous == null) spawn();
         else {
-            active = previous; x = 3; y = rotation = 0;
-            fallTimer = lockTimer = 0; lockResets = 0;
+            active = previous;
+            x = 3;
+            y = rotation = 0;
+            fallTimer = lockTimer = 0;
+            lockResets = 0;
             if (!fits(x, y, rotation)) state = State.OVER;
         }
         holdUsed = true;
     }
+
     void update(double dt) {
         if (state != State.PLAYING) return;
         updateTroublemaker(dt);
@@ -123,6 +192,7 @@ final class TetrisModel {
             if (lockTimer >= .45) lock();
         } else lockTimer = 0;
     }
+
     private void updateTroublemaker(double dt) {
         if (throwFlight > 0) {
             throwFlight = Math.max(0, throwFlight - dt);
@@ -132,8 +202,9 @@ final class TetrisModel {
                     if (x + cell[0] == throwColumn && y + cell[1] == throwRow) blocked = true;
                 // Never complete a row outside the normal lock/score cycle.
                 boolean lastGap = throwRow >= 0;
-                if (throwRow >= 0) for (int c = 0; c < COLS; c++)
-                    if (c != throwColumn && board[throwRow][c] == null) lastGap = false;
+                if (throwRow >= 0)
+                    for (int c = 0; c < COLS; c++)
+                        if (c != throwColumn && board[throwRow][c] == null) lastGap = false;
                 if (!blocked && !lastGap) {
                     board[throwRow][throwColumn] = thrownAnimal;
                     throwsLanded++;
@@ -152,10 +223,15 @@ final class TetrisModel {
         }
         if (throwCountdown == 0) {
             throwRow = ROWS - 1;
-            for (int r = 0; r < ROWS; r++) if (board[r][throwColumn] != null) { throwRow = r - 1; break; }
+            for (int r = 0; r < ROWS; r++)
+                if (board[r][throwColumn] != null) {
+                    throwRow = r - 1;
+                    break;
+                }
             throwFlight = THROW_FLIGHT;
         }
     }
+
     private void updateTimothy(double dt) {
         if (vacuumFlight > 0) {
             vacuumFlight = Math.max(0, vacuumFlight - dt);
@@ -178,35 +254,55 @@ final class TetrisModel {
             }
         }
         vacuumFlight = VACUUM_FLIGHT;
-        message = vacuumBlocks.isEmpty() ? "TIMOTHY: Spotless! I'll be back." :
-                "TIMOTHY: Whoosh! Vacuumed " + vacuumBlocks.size() + " blocks. You're welcome!";
+        message =
+                vacuumBlocks.isEmpty()
+                        ? "TIMOTHY: Spotless! I'll be back."
+                        : "TIMOTHY: Whoosh! Vacuumed "
+                                + vacuumBlocks.size()
+                                + " blocks. You're welcome!";
     }
+
     private void lock() {
         for (int[] cell : active.cells(rotation)) board[y + cell[1]][x + cell[0]] = active;
         int cleared = clearLines();
         if (cleared > 0) {
-            score += new int[] {0,100,300,500,800}[cleared] * level();
+            score += new int[] {0, 100, 300, 500, 800}[cleared] * level();
             lines += cleared;
             int award = (lines - cleared) / 3;
             while (award < lines / 3) {
                 int power = award % 3;
-                powers[power] = Math.min(3, powers[power] + 1); award++;
+                powers[power] = Math.min(3, powers[power] + 1);
+                award++;
             }
-            message = cleared == 4 ? "COLONIAL SWEEP! Four habitats restored." : "+" + cleared + " habitat rows • Go TJ!";
+            message =
+                    cleared == 4
+                            ? "COLONIAL SWEEP! Four habitats restored."
+                            : "+" + cleared + " habitat rows • Go TJ!";
         }
-        pieces++; holdUsed = false; spawn();
+        pieces++;
+        holdUsed = false;
+        spawn();
     }
+
     private int clearLines() {
         int write = ROWS - 1, cleared = 0;
         for (int read = ROWS - 1; read >= 0; read--) {
             boolean full = true;
-            for (Tetromino cell : board[read]) if (cell == null) { full = false; break; }
+            for (Tetromino cell : board[read])
+                if (cell == null) {
+                    full = false;
+                    break;
+                }
             if (full) cleared++;
-            else { System.arraycopy(board[read], 0, board[write], 0, COLS); write--; }
+            else {
+                System.arraycopy(board[read], 0, board[write], 0, COLS);
+                write--;
+            }
         }
         while (write >= 0) Arrays.fill(board[write--], null);
         return cleared;
     }
+
     void power(int index) {
         if (state != State.PLAYING || index < 0 || index > 2 || powers[index] == 0) return;
         powers[index]--;
@@ -214,8 +310,12 @@ final class TetrisModel {
             // Remove the lowest occupied row, then let the rows above it settle.
             int row = ROWS - 1;
             while (row >= 0 && Arrays.stream(board[row]).allMatch(Objects::isNull)) row--;
-            if (row < 0) { powers[index]++; message = "No habitat needs rescuing yet."; return; }
-            for (int r = row; r > 0; r--) System.arraycopy(board[r-1], 0, board[r], 0, COLS);
+            if (row < 0) {
+                powers[index]++;
+                message = "No habitat needs rescuing yet.";
+                return;
+            }
+            for (int r = row; r > 0; r--) System.arraycopy(board[r - 1], 0, board[r], 0, COLS);
             Arrays.fill(board[0], null);
             message = "OWL RESCUE • Lowest occupied row removed!";
         } else if (index == 1) {

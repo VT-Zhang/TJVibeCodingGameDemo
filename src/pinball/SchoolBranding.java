@@ -34,18 +34,31 @@ final class SchoolBranding {
             g.fillOval(-25, -29, 50, 59);
             g.setColor(new Color(24, 39, 65));
             g.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-            g.drawLine(-16, -7, -8, -9); g.drawLine(8, -9, 16, -7);
-            g.fillOval(-13, -4, 4, 5); g.fillOval(9, -4, 4, 5);
+            g.drawLine(-16, -7, -8, -9);
+            g.drawLine(8, -9, 16, -7);
+            g.fillOval(-13, -4, 4, 5);
+            g.fillOval(9, -4, 4, 5);
             g.drawArc(-10, 6, 20, 13, 195, 150);
             // Broad navy tricorn with a white brim and red cockade.
             Path2D hat = new Path2D.Double();
-            hat.moveTo(-53, -28); hat.lineTo(-27, -53); hat.lineTo(-12, -41);
-            hat.quadTo(0, -72, 14, -42); hat.lineTo(31, -53); hat.lineTo(53, -28);
-            hat.quadTo(0, -13, -53, -28); hat.closePath();
-            g.setColor(new Color(22, 44, 80)); g.fill(hat);
-            g.setColor(ArcadeGraphics.WHITE); g.draw(hat);
-            g.setColor(ArcadeGraphics.RED); g.fillOval(23, -40, 15, 15);
-            g.setColor(ArcadeGraphics.WHITE); g.fillOval(28, -35, 5, 5);
-        } finally { g.dispose(); }
+            hat.moveTo(-53, -28);
+            hat.lineTo(-27, -53);
+            hat.lineTo(-12, -41);
+            hat.quadTo(0, -72, 14, -42);
+            hat.lineTo(31, -53);
+            hat.lineTo(53, -28);
+            hat.quadTo(0, -13, -53, -28);
+            hat.closePath();
+            g.setColor(new Color(22, 44, 80));
+            g.fill(hat);
+            g.setColor(ArcadeGraphics.WHITE);
+            g.draw(hat);
+            g.setColor(ArcadeGraphics.RED);
+            g.fillOval(23, -40, 15, 15);
+            g.setColor(ArcadeGraphics.WHITE);
+            g.fillOval(28, -35, 5, 5);
+        } finally {
+            g.dispose();
+        }
     }
 }
