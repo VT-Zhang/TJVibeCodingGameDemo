@@ -11,6 +11,29 @@ Five standalone Java Swing games built in the same IntelliJ project. Requires
 | City × Sport Alchemy | `alchemy.Main` | Discover cities, sports, and events by combining cards |
 | Capital Dash | `capitaldash.Main` | Washington, DC cartoon platformer with synthesized music |
 
+## Game screenshots
+
+Screenshots captured directly from the games’ Swing/Java2D rendering. Click a screenshot to open its launcher.
+
+<table>
+  <tr>
+    <td align="center"><a href="src/pinball/Main.java"><img src="docs/covers/pinball.png" alt="Actual TJHSST pinball gameplay with the Colonial mascot, ball, flippers, and score HUD" height="260"></a><br><strong>TJHSST Colonials Pinball</strong></td>
+    <td align="center"><a href="src/flappybird/Main.java"><img src="docs/covers/flappybird.png" alt="Actual Flappy Bird gameplay with a yellow bird flying through green pipes" height="260"></a><br><strong>Flappy Bird</strong></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="src/tetris/Main.java"><img src="docs/covers/tetris.png" alt="Actual Animal Tetris gameplay showing the block stack, The Suit, and Timothy vacuuming" height="260"></a><br><strong>TJHSST Animal Tetris</strong></td>
+    <td align="center"><a href="src/alchemy/Main.java"><img src="docs/covers/alchemy.png" alt="Actual City and Sport Alchemy workbench with discovered cities and sports cards" height="260"></a><br><strong>City × Sport Alchemy</strong></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><a href="src/capitaldash/Main.java"><img src="docs/covers/capitaldash.png" alt="Actual Capital Dash gameplay showing the enlarged player, Kamala boss, and White House" height="260"></a><br><strong>Capital Dash</strong></td>
+  </tr>
+</table>
+
+Capture details and refresh instructions are in [docs/covers](docs/covers/README.md).
+These are the games’ own rendered pixels, with no generated artwork or added overlays.
+
+## Run a game
+
 Open the project in IntelliJ and run the corresponding `Main.java`, or compile
 all games from the project root:
 

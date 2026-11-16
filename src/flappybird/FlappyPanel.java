@@ -9,13 +9,17 @@ import java.util.Random;
 
 /** A small, self-contained arcade scene painted with Java2D. */
 final class FlappyPanel extends JPanel {
-    private final FlappyModel game =
-            new FlappyModel(new Random(), new ScoreStore(Path.of(".flappy-best")));
+    private final FlappyModel game;
     private long previous = System.nanoTime();
     private double accumulator, animation;
     private boolean held;
 
     FlappyPanel() {
+        this(new FlappyModel(new Random(), new ScoreStore(Path.of(".flappy-best"))));
+    }
+
+    FlappyPanel(FlappyModel game) {
+        this.game = game;
         setPreferredSize(new Dimension(480, 720));
         setBackground(new Color(24, 48, 65));
         bind(
